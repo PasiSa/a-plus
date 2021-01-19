@@ -32,6 +32,7 @@ class GroupsForm(forms.Form):
         self.member_profiles = [self.profile]
         for key in self.fields.keys():
             if key in self.cleaned_data and self.cleaned_data[key]:
+                # PS: I guess this is not covered by issue #600
                 enrollment = Enrollment.objects.filter(
                     course_instance=self.instance,
                     personal_code=self.cleaned_data[key].upper()

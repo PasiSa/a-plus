@@ -93,9 +93,8 @@ class LTIRequest(object):
     def user_info(self, course_instance, user):
         if self.service.is_anonymous:
             # Anonymize user information
-            enrollment = Enrollment.objects.filter(course_instance=course_instance, user_profile=user.userprofile).first()
-            if not enrollment:
-                raise PermissionDenied()
+            # PS: is the default get exception ok, or should we raise PermissionDenied?
+            enrollment = Enrollment.objects.get(course_instance=course_instance, user_profile=user.userprofile)
             # Creates anon name and id for pre-pseudonymisation Enrollments
             if not (enrollment.anon_name or enrollment.anon_id):
                 # the model's post_save functions take care of the creation

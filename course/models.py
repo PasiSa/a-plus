@@ -9,7 +9,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.contenttypes.fields import GenericRelation
 from django.contrib.staticfiles import finders
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.urls import reverse
 from django.db import models
 from django.db.models import Q, Count
@@ -539,7 +539,10 @@ class CourseInstance(UrlMixin, models.Model):
         UserTagging.objects.create(tag=tag, user=user.userprofile, course_instance=self)
 
     def get_enrollment_for(self, user):
-        return Enrollment.objects.filter(course_instance=self, user_profile=user.userprofile).first()
+        try:
+            return Enrollment.objects.get(course_instance=self, user_profile=user.userprofile)
+        except ObjectDoesNotExist:
+            return None
 
     def get_user_tags(self, user):
         return self.taggings.filter(user=user.uesrprofile).select_related('tag')
